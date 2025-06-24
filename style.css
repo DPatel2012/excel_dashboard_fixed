@@ -1,0 +1,261 @@
+/* Import a modern font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+  --bg-main: #0f172a;
+  --bg-sidebar: #1e293b;
+  --accent: #3b82f6;
+  --text-light: #f1f5f9;
+  --text-dark: #94a3b8;
+  --card-bg: #1e293b;
+  --border: #334155;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(to right, #0f172a, #1e293b);
+  color: var(--text-light);
+  overflow: hidden;
+}
+
+/* Sidebar Navigation */
+.sidebar {
+  width: 240px;
+  background-color: var(--bg-sidebar);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  box-shadow: 3px 0 12px rgba(0, 0, 0, 0.4);
+}
+
+.sidebar h2 {
+  color: var(--accent);
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.sidebar a {
+  color: var(--text-dark);
+  text-decoration: none;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  background-color: var(--accent);
+  color: white;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.main-content h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: white;
+}
+
+/* Form Styling */
+form {
+  background: var(--card-bg);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+input[type="file"],
+select,
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-color: var(--bg-main);
+  color: var(--text-light);
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Buttons */
+button {
+  padding: 12px 25px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background: #2563eb;
+}
+
+/* Chart & Table Section */
+.chart-container, .data-table {
+  background: var(--card-bg);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--text-light);
+}
+
+th, td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  background-color: var(--accent);
+  color: white;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 10px;
+}
+
+/* Centered Auth Container */
+.auth-container {
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(to right, #0f172a, #1e293b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-box {
+  background-color: var(--card-bg);
+  padding: 50px 40px;
+  border-radius: 20px;
+  width: 450px;
+  max-width: 90%;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.auth-box h2 {
+  color: var(--accent);
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.auth-box input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background-color: var(--bg-main);
+  color: var(--text-light);
+}
+
+.auth-box input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.auth-box button {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-box button:hover {
+  background-color: #2563eb;
+}
+
+.auth-box p {
+  margin-top: 20px;
+  color: var(--text-dark);
+}
+
+.auth-box a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* Improve select boxes */
+select {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 10px;
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+select option {
+  color: #000;
+  background-color: #fff;
+}
+
+/* Button Row Style */
+.button-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+/* Slim Buttons */
+.button-row button {
+  padding: 8px 18px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.button-row button:hover {
+  background: #2563eb;
+}

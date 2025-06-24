@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload File</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      display: flex;
+      transition: background 0.4s ease;
+    }
+    .theme-bluegreen {
+      background: linear-gradient(to right top, #4f46e5, #0ea5e9, #10b981);
+    }
+    .theme-orangepink {
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+    }
+    .theme-purpleindigo {
+      background: linear-gradient(to right, #7f00ff, #e100ff);
+    }
+    .theme-sunset {
+      background: linear-gradient(to right, #ff6a00, #ee0979);
+    }
+    .theme-coolsky {
+      background: linear-gradient(to right, #2193b0, #6dd5ed);
+    }
+    .sidebar {
+      width: 250px;
+      background: rgba(0,0,0,0.4);
+      padding: 20px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+    }
+    .sidebar a {
+      color: #ffffff;
+      display: block;
+      margin: 12px 0;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+    .chart-container, .data-table, form {
+      background: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      color: #ffffff;
+    }
+    th {
+      background-color: rgba(255,255,255,0.15);
+    }
+    input, select, button, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: none;
+      background: rgba(255,255,255,0.15);
+      color: #ffffff;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #e5e7eb;
+    }
+    button {
+      cursor: pointer;
+      background-color: #3b82f6;
+    }
+    button:hover {
+      background-color: #2563eb;
+    }
+    label {
+      color: #f1f5f9;
+      font-weight: 600;
+      display: block;
+      margin-bottom: 5px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <script>
+    const savedTheme = localStorage.getItem("selectedTheme") || "theme-bluegreen";
+    document.body.className = savedTheme;
+  </script>
+  <div class="sidebar">
+    <h2 style="color: #ffffff;">📤 Upload</h2>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/profile">Profile</a>
+    <a href="/logout">Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Upload Dataset</h1>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <label>Select File</label>
+      <input type="file" name="file" required>
+      <button type="submit">Upload and Visualize</button>
+    </form>
+
+    {% if data %}
+    <div class="chart-container">
+      <h2>{{ chart_title }}</h2>
+
+      <label for="x-axis">X Axis:</label>
+      <select id="x-axis">
+        {% for col in columns %}
+        <option value="{{ col }}">{{ col }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="y-axis">Y Axis:</label>
+      <select id="y-axis">
+        {% for col in columns %}
+        <option value="{{ col }}">{{ col }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="chart-type">Chart Type:</label>
+      <select id="chart-type">
+        <option value="bar">Bar</option>
+        <option value="line">Line</option>
+        <option value="pie">Pie</option>
+      </select>
+
+      <button onclick="generateChart()" type="button">Generate Chart</button>
+      <button onclick="downloadChartPNG()" type="button">Download PNG</button>
+      <button onclick="downloadChartPDF()" type="button">Download PDF</button>
+
+      <canvas id="myChart" width="600" height="300"></canvas>
+    </div>
+
+    <div class="data-table">
+      <h2>Data Table</h2>
+      <table>
+        <thead>
+          <tr>
+            {% for col in columns %}
+              <th>{{ col }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in data %}
+            <tr>
+              {% for col in columns %}
+                <td>{{ row[col] }}</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    <script>
+      const rawData = {{ data | tojson }};
+      const columns = {{ columns | tojson }};
+
+      let myChartInstance;
+
+      function generateChart() {
+        const xCol = document.getElementById('x-axis').value;
+        const yCol = document.getElementById('y-axis').value;
+        const chartType = document.getElementById('chart-type').value;
+
+        const xData = rawData.map(row => row[xCol]);
+        const yData = rawData.map(row => parseFloat(row[yCol]));
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+        if (myChartInstance) {
+          myChartInstance.destroy();
+        }
+
+        let chartData;
+        if (chartType === 'pie') {
+          chartData = {
+            labels: xData,
+            datasets: [{
+              data: yData,
+              backgroundColor: xData.map((_, i) => `hsl(${i * 20}, 70%, 60%)`)
+            }]
+          };
+        } else {
+          chartData = {
+            labels: xData,
+            datasets: [{
+              label: `${yCol} vs ${xCol}`,
+              data: yData,
+              backgroundColor: 'rgba(59,130,246,0.7)',
+              borderColor: 'rgba(59,130,246,1)',
+              borderWidth: 1,
+              borderRadius: 6,
+              fill: chartType === 'line' ? false : true
+            }]
+          };
+        }
+
+        myChartInstance = new Chart(ctx, {
+          type: chartType,
+          data: chartData,
+          options: {
+            responsive: true,
+            animation: false,
+            scales: chartType === 'pie' ? {} : {
+              y: { beginAtZero: true }
+            }
+          }
+        });
+      }
+
+      function downloadChartPNG() {
+        const link = document.createElement('a');
+        link.download = 'chart.png';
+        link.href = document.getElementById('myChart').toDataURL('image/png');
+        link.click();
+      }
+
+      async function downloadChartPDF() {
+        const canvas = document.getElementById('myChart');
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        const width = pdf.internal.pageSize.getWidth();
+        const height = (canvas.height / canvas.width) * width;
+        pdf.addImage(imgData, 'PNG', 10, 10, width - 20, height);
+        pdf.save('chart.pdf');
+      }
+
+      window.onload = generateChart;
+    </script>
+  </div>
+</body>
+</html>

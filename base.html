@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Excel Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="sidebar">
+    <h2>📊 Dashboard</h2>
+    <a href="/">Home</a>
+    <a href="/upload">Upload</a>
+    <a href="/history">History</a>
+    <a href="/profile">Profile</a>
+    <a href="/logout">Logout</a>
+  </div>
+
+  <div class="main-content">
+    <h1>Upload Excel File</h1>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" required>
+      <input type="text" name="chart_title" placeholder="Chart Title">
+      <button type="submit">Upload & Generate</button>
+    </form>
+
+    <div class="chart-container">
+      <!-- Your charts go here -->
+      <p>Chart will be displayed here.</p>
+    </div>
+
+    <div class="data-table">
+      <!-- Your tables go here -->
+      <p>Table will be displayed here.</p>
+    </div>
+  </div>
+</body>
+</html>
